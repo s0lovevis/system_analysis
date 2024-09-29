@@ -27,12 +27,10 @@ def find_all_childs_cnt(v, edges):
     return total_childs
 
 def find_depth(v, edges, depth_dict, d=0):
-    depth_dict.setdefault(v, d)
-
+    depth_dict[v] = d
     # если вершина - лист, то никуда дальше не идем
     if v not in edges.keys():
         return 0
-    
     # ищем глубины дальше
     for to in edges[v]:
         find_depth(to, edges, depth_dict, d+1)
@@ -59,26 +57,26 @@ if __name__ == "__main__":
     vertices = list(set(vertices))
     vertices = sorted(vertices)
 
-    print(vertices)
-
-    # depth_dict = dict()
-    # find_depth(1, edges, depth_dict)
-    # print(depth_dict)
-
-    final_answer = pd.DataFrame(columns=['r1', 'r2', 'r3'])
+    final_answer = pd.DataFrame(columns=['r1', 'r2', 'r3', 'r4', 'r5'])
 
     for v in vertices:
-        ans = dict.fromkeys(['r1', 'r2', 'r3'])
+        ans = dict.fromkeys(['r1', 'r2', 'r3', 'r4', 'r5'])
         # r1 - непосредственное управление
         ans['r1'] = find_nearest_childs_cnt(v, edges)
         # r2 - отношение непосредственного подчинения
         root = find_root(edges)
         ans['r2'] = int(root != v)
-        # отношение посредственного управления
+        # r3 - отношение опосредственного управления
         ans['r3'] = find_all_childs_cnt(v, edges) - ans['r1']
+        # r4 - отношение опосредованного подчинения
+        depth_dict = dict.fromkeys(vertices, 0)
+        find_depth(root, edges, depth_dict)
+        ans['r4'] = max(0, depth_dict[v] - 1)
+        # r5 - отношение соподчинения на одном уровне
+        ans['r5'] = max(0, len([x for x in depth_dict.keys() if depth_dict[x] == depth_dict[v]]) - 1)
 
         ans = pd.DataFrame([ans], index=[v])
 
         final_answer = pd.concat([final_answer, ans], ignore_index=False)
 
-    print(final_answer)
+    final_answer.to_csv("result.csv", header=None, index=None)
