@@ -14,7 +14,7 @@ def get_cell_value(file_path, row, col):
     cell_value = df.iloc[row, col]
     print(cell_value)
 
-if __name__ == "__main__":
+def main():
     if len(sys.argv) != 4:
         print("Usage: python task.py <file_path> <row> <col>")
         sys.exit(1)
@@ -24,3 +24,6 @@ if __name__ == "__main__":
     col = int(sys.argv[3])
 
     get_cell_value(file_path, row, col)
+
+if __name__ == "__main__":
+    main()

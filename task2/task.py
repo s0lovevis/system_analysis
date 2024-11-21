@@ -36,7 +36,8 @@ def find_depth(v, edges, depth_dict, d=0):
         find_depth(to, edges, depth_dict, d+1)
     
 
-if __name__ == "__main__":
+def main():
+
     if len(sys.argv) != 2:
         print("Usage: python task.py <file_path>")
         sys.exit(1)
@@ -80,3 +81,6 @@ if __name__ == "__main__":
         final_answer = pd.concat([final_answer, ans], ignore_index=False)
 
     final_answer.to_csv("result.csv", header=None, index=None)
+
+if __name__ == "__main__":
+    main()
